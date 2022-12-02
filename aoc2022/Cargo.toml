@@ -1,0 +1,17 @@
+[package]
+name = "aoc2022"
+version = "0.1.0"
+edition = "2021"
+authors = ["Orrin Jelo <orrinDOTjeloATgmailDOTcom>"]
+
+[dependencies]
+itertools = "~0.10.5"
+log = "~0.4"
+env_logger = "~0.10"
+regex = "~1.7"
+rustop = "~1.1.2"
+log4rs = "~1.2"
+
+[[bin]]
+name = "main"
+path = "src/main.rs"
