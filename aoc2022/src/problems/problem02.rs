@@ -10,63 +10,65 @@ fn _get_rid_of_log_unused_import_warnings() {
     error!("Example error.");
 }
 
-pub fn rps_naive(input: Vec<String>) -> u32 {
+pub fn rps_naive(input: Vec<String>) -> Result<u32, &'static str> {
     let mut score = 0;
     for line in input {
         let choice = match line.as_bytes()[0] as char {
             'A' => {
                 score += 1;
-                'r'
+                Ok('r')
             },
             'B' => {
                 score += 2;
-                'p'
+                Ok('p')
             },
             'C' => {
                 score += 3;
-                's'
+                Ok('s')
             },
-            _ => {'x'},
+            _ => {Err("Bad player pick.")},
         };
         let elf_choice = match line.as_bytes()[2] as char {
             'X' => {
-                score += 1;
-                'r'
+                Ok('r')
             },
             'Y' => {
-                score += 2;
-                'p'
+                Ok('p')
             },
             'Z' => {
-                score += 3;
-                's'
+                Ok('s')
             },
-            _ => {'x'},
+            _ => {Err("Bad elf pick.")},
         };
         if choice == elf_choice {
             score += 3;
+            println!("You tied.");
         } else {
             match choice {
-                'r' => {
-                    if elf_choice == 's' {
+                Ok('r') => {
+                    if elf_choice == Ok('s') {
                         score += 6;
+                        println!("You won, r vs s.");
                     }
                 },
-                'p' => {
-                    if elf_choice == 'r' {
+                Ok('p') => {
+                    if elf_choice == Ok('r') {
                         score += 6;
+                        println!("You won, p vs r.");
                     }
                 },
-                's' => {
-                    if elf_choice == 'p' {
+                Ok('s') => {
+                    if elf_choice == Ok('p') {
                         score += 6;
+                        println!("You won, s vs p.");
                     }
                 },
-                _ => {},
+                Err(x) => return Err(x),
+                _ => return Err("Unknown error."),
             };
         }
     }
-    return score;
+    return Ok(score);
 }
 
 /**
@@ -109,6 +111,10 @@ mod tests {
             "B X".to_string(),
             "C Z".to_string(),
         ];
-        rps_naive(input);
+        let res = rps_naive(input);
+
+        println!("{:?}", res);
+
+        assert!(res.unwrap() == 15);
     }
 }
