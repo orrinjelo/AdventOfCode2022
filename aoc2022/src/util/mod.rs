@@ -78,6 +78,7 @@ pub fn flatten<T>(nested: Vec<Vec<T>>) -> Vec<T> {
 //     }
 // }
 
+#[allow(dead_code)]
 #[derive(Clone, PartialEq)]
 pub enum RetType {
     U32(u32),
