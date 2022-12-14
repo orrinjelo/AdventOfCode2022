@@ -11,6 +11,9 @@ env_logger = "~0.10"
 regex = "~1.7"
 rustop = "~1.1.2"
 log4rs = "~1.2"
+trees = "0.4.2"
+plotters = "0.3.4"
+gif = "0.12.0"
 
 [[bin]]
 name = "main"

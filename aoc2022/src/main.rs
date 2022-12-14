@@ -40,6 +40,20 @@ fn run_problem(num: i32, input: Vec<String>) {
         0 => execute_problem(num, input, problems::problem00::problem_001, problems::problem00::problem_002),
         // Problem 1; Elven Financemancy
         1 => execute_problem(num, input, problems::problem01::problem_011, problems::problem01::problem_012),
+        // Problem 2; Elven RPS
+        2 => execute_problem(num, input, problems::problem02::problem_021, problems::problem02::problem_022),
+        // Problem 3; Backpackin'
+        3 => execute_problem(num, input, problems::problem03::problem_031, problems::problem03::problem_032),
+        // Problem 4: I have no idea what's going on at this point
+        4 => execute_problem(num, input, problems::problem04::problem_041, problems::problem04::problem_042),
+        // Problem 5: Crates of Hanoi
+        5 => execute_problem(num, input, problems::problem05::problem_051, problems::problem05::problem_052),
+        // Problem 6: Bytes and Messages
+        6 => execute_problem(num, input, problems::problem06::problem_061, problems::problem06::problem_062),
+        // Problem 8: Treeeeees
+        8 => execute_problem(num, input, problems::problem08::problem_081, problems::problem08::problem_082),
+        // Problem 9: Snek
+        9 => execute_problem(num, input, problems::problem09::problem_091, problems::problem09::problem_092),
         _ => warn!("Problem number not available.")
     }
 }
@@ -79,7 +93,7 @@ fn main() {
 
     // Parse args
     if args.run_all {
-        for i in 0..2 {
+        for i in 0..4 {
             let filename = format!("aoc2022/inputs/{:02}.txt", i).to_string();
             let input = util::load_file(filename);
             run_problem(i, input);
