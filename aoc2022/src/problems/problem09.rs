@@ -1,6 +1,7 @@
 use log::{trace, debug, info, warn, error}; // trace, debug, info, warn, error
 use crate::util::RetType;
 use gif::{Frame, Encoder, Repeat};
+// use std::io::Write;
 use std::fs::File;
 use std::borrow::Cow;
 
@@ -48,7 +49,7 @@ impl Snek {
     }
 
     pub fn step(&mut self, dir: Direction, segment_num: usize) {
-        debug!("PRE  {} pos: {:?} {:?}", segment_num, self.segments[segment_num], dir);
+        // debug!("PRE  {} pos: {:?} {:?}", segment_num, self.segments[segment_num], dir);
 
         match dir {
             Direction::L => {
@@ -63,32 +64,27 @@ impl Snek {
                     let prv_x = self.segments[segment_num-1].x;
                     let prv_y = self.segments[segment_num-1].y;
 
-                    if (seg_x - prv_x).abs() > 1 {
+                    if (seg_x - prv_x).abs() > 1 || (seg_y - prv_y).abs() > 1 {
                         self.segments[segment_num].x -= 1;
-                        if segment_num != self.segments.len() - 1 {
-                            self.step(Direction::L, segment_num+1);
-                        }
+
                         if (seg_y - prv_y).abs() >= 1 && seg_y > prv_y {
                             self.segments[segment_num].y -= 1;
+                    
                             if segment_num != self.segments.len() - 1 {
                                 self.step(Direction::U, segment_num+1);
                             }
                         } else if (seg_y - prv_y).abs() >= 1 && seg_y < prv_y {
                             self.segments[segment_num].y += 1;
+                    
                             if segment_num != self.segments.len() - 1 {
                                 self.step(Direction::D, segment_num+1);
                             }
+                        } else {
+                            if segment_num != self.segments.len() - 1 {
+                                self.step(Direction::L, segment_num+1);
+                            }                            
                         }
                     }
-
-                //     if (self.segments[segment_num].x- self.segments[segment_num-1].x).abs() > 1 {
-                //         self.segments[segment_num].x -= 1;
-                //         if self.segments[segment_num].y > self.segments[segment_num-1].y {
-                //             self.segments[segment_num].y -= 1;
-                //         } else if self.segments[segment_num].y < self.segments[segment_num-1].y {
-                //             self.segments[segment_num].y += 1;
-                //         }
-                //     }
                 }
             },
             Direction::R => {
@@ -103,32 +99,27 @@ impl Snek {
                     let prv_x = self.segments[segment_num-1].x;
                     let prv_y = self.segments[segment_num-1].y;
 
-                    if (seg_x - prv_x).abs() > 1 {
+                    if (seg_x - prv_x).abs() > 1 || (seg_y - prv_y).abs() > 1 {
                         self.segments[segment_num].x += 1;
-                        if segment_num != self.segments.len() - 1 {
-                            self.step(Direction::R, segment_num+1);
-                        }
+
                         if (seg_y - prv_y).abs() >= 1 && seg_y > prv_y {
                             self.segments[segment_num].y -= 1;
+                    
                             if segment_num != self.segments.len() - 1 {
                                 self.step(Direction::U, segment_num+1);
                             }
                         } else if (seg_y - prv_y).abs() >= 1 && seg_y < prv_y {
                             self.segments[segment_num].y += 1;
+                    
                             if segment_num != self.segments.len() - 1 {
                                 self.step(Direction::D, segment_num+1);
                             }
+                        } else {
+                            if segment_num != self.segments.len() - 1 {
+                                self.step(Direction::R, segment_num+1);
+                            }
                         }
                     }
-
-                    // if (self.segments[segment_num].x - self.segments[segment_num-1].x).abs() > 1 {
-                    //     self.segments[segment_num].x += 1;
-                    //     if self.segments[segment_num].y > self.segments[segment_num-1].y {
-                    //         self.segments[segment_num].y -= 1;
-                    //     } else if self.segments[segment_num].y < self.segments[segment_num-1].y {
-                    //         self.segments[segment_num].y += 1;
-                    //     }
-                    // }
                 }
             },
             Direction::U => {
@@ -143,32 +134,26 @@ impl Snek {
                     let prv_x = self.segments[segment_num-1].x;
                     let prv_y = self.segments[segment_num-1].y;
 
-                    if (seg_y - prv_y).abs() > 1 {
+                    if (seg_y - prv_y).abs() > 1 || (seg_x - prv_x).abs() > 1 {
                         self.segments[segment_num].y -= 1;
-                        if segment_num != self.segments.len() - 1 {
-                            self.step(Direction::U, segment_num+1);
-                        }
                         if (seg_x - prv_x).abs() >= 1 && seg_x > prv_x {
                             self.segments[segment_num].x -= 1;
+                    
                             if segment_num != self.segments.len() - 1 {
                                 self.step(Direction::L, segment_num+1);
                             }
                         } else if (seg_x - prv_x).abs() >= 1 && seg_x < prv_x {
                             self.segments[segment_num].x += 1;
+                    
                             if segment_num != self.segments.len() - 1 {
                                 self.step(Direction::R, segment_num+1);
                             }
+                        } else {
+                            if segment_num != self.segments.len() - 1 {
+                                self.step(Direction::U, segment_num+1);
+                            }
                         }
                     }
-
-                    // if (self.segments[segment_num].y - self.segments[segment_num-1].y).abs() > 1 {
-                    //     self.segments[segment_num].y -= 1;
-                    //     if self.segments[segment_num].x > self.segments[segment_num-1].x {
-                    //         self.segments[segment_num].x -= 1;
-                    //     } else if self.segments[segment_num].x < self.segments[segment_num-1].x {
-                    //         self.segments[segment_num].x += 1;
-                    //     }
-                    // }
                 }
             },
             Direction::D => {
@@ -183,38 +168,34 @@ impl Snek {
                     let prv_x = self.segments[segment_num-1].x;
                     let prv_y = self.segments[segment_num-1].y;
 
-                    if (seg_y - prv_y).abs() > 1 {
-                        self.segments[segment_num].y -= 1;
-                        if segment_num != self.segments.len() - 1 {
-                            self.step(Direction::D, segment_num+1);
-                        }
+                    if (seg_y - prv_y).abs() > 1 || (seg_x - prv_x).abs() > 1 {
+                        self.segments[segment_num].y += 1;           
                         if (seg_x - prv_x).abs() >= 1 && seg_x > prv_x {
                             self.segments[segment_num].x -= 1;
+                    
                             if segment_num != self.segments.len() - 1 {
                                 self.step(Direction::L, segment_num+1);
                             }
+
                         } else if (seg_x - prv_x).abs() >= 1 && seg_x < prv_x {
                             self.segments[segment_num].x += 1;
+                    
                             if segment_num != self.segments.len() - 1 {
                                 self.step(Direction::R, segment_num+1);
                             }
+                        } else {
+                            if segment_num != self.segments.len() - 1 {
+                                self.step(Direction::D, segment_num+1);
+                            }
                         }
                     }
-
-                    // if (self.segments[segment_num].y - self.segments[segment_num-1].y).abs() > 1 {
-                    //     self.segments[segment_num].y += 1;
-                    //     if self.segments[segment_num].x > self.segments[segment_num-1].x {
-                    //         self.segments[segment_num].x -= 1;
-                    //     } else if self.segments[segment_num].x < self.segments[segment_num-1].x {
-                    //         self.segments[segment_num].x += 1;
-                    //     }
-                    // }
                 }
             },
         };
-        debug!("POST {} pos: {:?} {:?}", segment_num, self.segments[segment_num], dir);
+        // debug!("POST {} pos: {:?} {:?}", segment_num, self.segments[segment_num], dir);
     }
 
+    #[allow(dead_code)]
     pub fn move_me(&mut self, dir: Direction, n: u32) {
         for _i in 0..n {
             self.step(dir, 0);
@@ -227,31 +208,71 @@ struct Arena {
     size_y: usize,
     snek: Snek,
     field: Vec<Vec<u8>>,
+    encoder: Encoder<File>,
 }
 
 impl Arena {
     pub fn new(size: (usize, usize), snek_len: usize) -> Arena {
+        let image_file = File::create("problem09.gif").unwrap();
+        let color_map = &[0xFF, 0xFF, 0xFF, 0, 0, 0];
         let mut arena = Arena {
             size_x: size.0,
             size_y: size.1,
             snek: Snek::new((0,0), snek_len),
             field: vec![vec![0u8; size.0]; size.1],
+            encoder: Encoder::new(image_file, size.0 as u16, size.1 as u16, color_map).unwrap(),
         };
         arena.field[size.1/2][size.0/2] = 1;
+        arena.encoder.set_repeat(Repeat::Infinite).unwrap();
         arena
     }
 
-    pub fn move_snek(&mut self, dir: Direction, n: u32) {
-        for i in 0..n {
+    pub fn move_snek(&mut self, dir: Direction, n: u32, plot: bool) {
+        for _i in 0..n {
             // debug!("Moving {}/{}", i, n);
             self.snek.step(dir, 0);
             // debug!("{:?}", self.snek);
             let tail_x = self.snek.segments[self.snek.segments.len()-1].x;
             let tail_y = self.snek.segments[self.snek.segments.len()-1].y;
+            // debug!("{} {}", self.size_y as i32/2, tail_y);
             self.field[(self.size_y as i32/2 + tail_y) as usize][(self.size_x as i32/2 + tail_x) as usize] = 1;
+
+            if plot {
+                let mut frame = Frame::default();
+                frame.width = self.size_x as u16;
+                frame.height = self.size_y as u16;
+                frame.delay = 1;
+                let mut field_copy = self.field.clone();
+                for j in 0..self.snek.segments.len() {
+                    field_copy[(self.size_y as i32/2 + self.snek.segments[j].y) as usize][(self.size_x as i32/2 + self.snek.segments[j].x) as usize] = 1;
+                }
+                let flattened: Vec<u8> = field_copy
+                        .iter()
+                        .flat_map(|array| array.iter())
+                        .cloned()
+                        .collect();
+                frame.buffer = Cow::from(flattened.as_slice());
+
+                self.encoder.write_frame(&frame).unwrap();
+            }
         }
     }
 
+    // #[allow(dead_code)]
+    // pub fn get_frame(&self) -> Frame {
+    //     let mut frame = Frame::default();
+    //     frame.width = self.size_x as u16;
+    //     frame.height = self.size_y as u16;
+    //     let flattened: Vec<u8> = self.field
+    //             .iter()
+    //             .flat_map(|array| array.iter())
+    //             .cloned()
+    //             .collect();
+    //     frame.buffer = Cow::from(flattened);
+    //     frame
+    // }    
+
+    #[allow(dead_code)]
     pub fn print(&self) {
         let head_x = self.snek.segments[0].x;
         let head_y = self.snek.segments[0].y;
@@ -325,7 +346,7 @@ pub fn problem_091(input: Vec<String>) -> RetType {
 
     for line in input {
         let (dir, n) = parse_line(&line);
-        arena.move_snek(dir, n);
+        arena.move_snek(dir, n, false);
     }
 
     return RetType::U32(arena.count_painted());
@@ -335,7 +356,16 @@ pub fn problem_091(input: Vec<String>) -> RetType {
  *  Problem #09, part 2
  */
 pub fn problem_092(input: Vec<String>) -> RetType {
-    return RetType::U32(0);
+
+    let mut arena = Arena::new((400,400), 10);
+
+    for line in input {
+        println!("Run {}", line);
+        let (dir, n) = parse_line(&line);
+        arena.move_snek(dir, n, true);
+    }
+
+    return RetType::U32(arena.count_painted());
 }
 
 
@@ -357,7 +387,7 @@ mod tests {
     #[test]
     fn test_moves() {
         let mut arena = Arena::new((11,11), 2);
-        arena.move_snek(Direction::R, 4);
+        arena.move_snek(Direction::R, 4, false);
 
         // arena.print();
     }
@@ -381,7 +411,7 @@ mod tests {
 
         for line in input {
             let (dir, n) = parse_line(&line);
-            arena.move_snek(dir, n);
+            arena.move_snek(dir, n, false);
         }
 
         // arena.print();
@@ -393,22 +423,33 @@ mod tests {
     fn test_part_2() {
         init();
 
+        // let input = vec![
+        //     "R 4".to_string(),
+        //     "U 4".to_string(),
+        //     "L 3".to_string(),
+        //     "D 1".to_string(),
+        //     "R 4".to_string(),
+        //     "D 1".to_string(),
+        //     "L 5".to_string(),
+        //     "R 2".to_string(),
+        // ];
+
         let input = vec![
             "R 5".to_string(),
             "U 8".to_string(), // was 8
-            // "L 8".to_string(),
-            // "D 3".to_string(),
-            // "R 17".to_string(),
-            // "D 10".to_string(),
-            // "L 25".to_string(),
-            // "U 20".to_string(),
+            "L 8".to_string(), // was 8
+            "D 3".to_string(),
+            "R 17".to_string(), // was 17
+            "D 10".to_string(),
+            "L 25".to_string(),
+            "U 20".to_string(),
         ];
 
-        let mut arena = Arena::new((50,50), 10);
+        let mut arena = Arena::new((100,100), 10);
 
         for line in input {
             let (dir, n) = parse_line(&line);
-            arena.move_snek(dir, n);
+            arena.move_snek(dir, n, false);
         }
 
         arena.print();
